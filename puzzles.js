@@ -302,16 +302,16 @@ const PUZZLES = [
     code: `(program 1.1.0
   (lam n
     [ (builtin equalsInteger)
-      [ (builtin remInteger) n (con integer 2) ]
+      [ (builtin remainderInteger) n (con integer 2) ]
       (con integer 1) ]))`,
     options: [
-      "remInteger truncates toward zero, so remInteger -7 2 is -1 and negative odd numbers come out as even. Use modInteger",
-      "remInteger's arguments are reversed",
+      "remainderInteger truncates toward zero, so remainderInteger -7 2 is -1 and negative odd numbers come out as even. Use modInteger",
+      "remainderInteger's arguments are reversed",
       "equalsInteger can't compare negative numbers",
       "UPLC integers are unsigned",
     ],
     explain:
-      "The sign of remInteger follows the dividend; the sign of modInteger follows the divisor. modInteger -7 2 = 1, remInteger -7 2 = -1. The same split exists between quotientInteger (truncate) and divideInteger (floor).",
+      "The sign of remainderInteger follows the dividend; the sign of modInteger follows the divisor. modInteger -7 2 = 1, remainderInteger -7 2 = -1. The same split exists between quotientInteger (truncate) and divideInteger (floor).",
     fix: `(program 1.1.0
   (lam n
     [ (builtin equalsInteger)
