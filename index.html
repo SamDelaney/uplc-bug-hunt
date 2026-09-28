@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>UPLC Bug Hunt</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main>
+    <header class="top">
+      <h1>UPLC <span>Bug Hunt</span></h1>
+      <div class="hud" id="hud" hidden>
+        <span>Round <b id="round"></b></span>
+        <span>Score <b id="score">0</b></span>
+        <span>Streak <b id="streak">0</b></span>
+      </div>
+    </header>
+
+    <section id="start" class="card">
+      <p class="lede">Each round shows a snippet of Untyped Plutus Core and what it was <em>meant</em> to do. Find the bug.</p>
+      <p class="muted">Easy is worth 100, medium 200, hard 300. Each correct answer in a row adds 25% to the next one, up to double. Keys 1 to 4 answer, Enter continues.</p>
+      <div class="filters" id="filters">
+        <button data-filter="all" class="primary">All puzzles</button>
+        <button data-filter="easy">Easy</button>
+        <button data-filter="medium">Medium</button>
+        <button data-filter="hard">Hard</button>
+      </div>
+      <p class="muted" id="best"></p>
+    </section>
+
+    <section id="play" hidden>
+      <div class="card">
+        <div class="meta">
+          <span class="badge" id="diff"></span>
+          <h2 id="title"></h2>
+        </div>
+        <p class="context"><span>Intent</span> <span id="context"></span></p>
+        <pre class="code" id="code"></pre>
+      </div>
+      <p class="prompt">What's the problem?</p>
+      <ol class="options" id="options"></ol>
+      <div class="card reveal" id="reveal" hidden>
+        <p class="verdict" id="verdict"></p>
+        <p id="explain"></p>
+        <p class="label">Fixed</p>
+        <pre class="code" id="fix"></pre>
+        <button class="primary" id="next">Next</button>
+      </div>
+    </section>
+
+    <section id="end" class="card" hidden>
+      <h2 id="final"></h2>
+      <p id="summary"></p>
+      <ul class="review" id="review"></ul>
+      <button class="primary" id="again">Play again</button>
+    </section>
+  </main>
+  <script src="puzzles.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>
