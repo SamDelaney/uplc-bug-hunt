@@ -41,6 +41,7 @@
 }
 
 * { box-sizing: border-box; }
+[hidden] { display: none !important; }
 body {
   margin: 0;
   background: var(--bg);
@@ -107,7 +108,14 @@ button.primary { background: var(--accent); color: #17140c; border-color: var(--
 .reveal button { margin-top: 16px; }
 .bug { font-weight: 600; margin: 0 0 8px; }
 
+#end { margin-top: 24px; padding-top: 28px; }
+#end h2 { margin-top: 0; }
+.times { display: flex; gap: 24px; flex-wrap: wrap; margin: 12px 0 4px; }
+.times div { display: flex; flex-direction: column; }
+.times span { font: 600 0.72rem var(--mono); text-transform: uppercase; color: var(--muted); }
+.times b { font: 600 1.2rem var(--mono); }
 .review { list-style: none; padding: 0; }
+.review .time { margin-left: auto; font-family: var(--mono); color: var(--muted); white-space: nowrap; }
 .review li { padding: 8px 0; border-bottom: 1px solid var(--border); display: flex; gap: 10px; }
 .review li:last-child { border-bottom: 0; }
 .review .mark { font-family: var(--mono); width: 1.2em; }

@@ -37,6 +37,24 @@ function highlight(src) {
 
 // ---------- state ----------
 let state = null;
+let ticker = null;
+
+// Timers count only time spent on questions: each question's clock stops when it's answered,
+// so reading the explanation doesn't count against you.
+function fmtSec(ms) { return `${(ms / 1000).toFixed(1)}s`; }
+function fmtClock(ms) {
+  const s = Math.floor(ms / 1000);
+  return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
+}
+function questionMs() {
+  return state.answered ? state.lastMs : performance.now() - state.qStart;
+}
+function tick() {
+  const q = questionMs();
+  $("qtime").textContent = fmtSec(q);
+  $("ttime").textContent = fmtClock(state.totalMs + (state.answered ? 0 : q));
+}
+function stopTicker() { clearInterval(ticker); ticker = null; }
 
 function shuffle(arr) {
   const a = arr.slice();
@@ -69,6 +87,9 @@ function start(filter) {
     bestStreak: 0,
     results: [],
     answered: false,
+    totalMs: 0,
+    qStart: 0,
+    lastMs: 0,
   };
   show("play");
   renderPuzzle();
@@ -100,11 +121,21 @@ function renderPuzzle() {
     list.appendChild(li);
   });
   window.scrollTo({ top: 0 });
+
+  state.qStart = performance.now();
+  stopTicker();
+  tick();
+  ticker = setInterval(tick, 100);
 }
 
 function answer(n) {
   if (state.answered) return;
+  const ms = performance.now() - state.qStart;
   state.answered = true;
+  state.lastMs = ms;
+  state.totalMs += ms;
+  stopTicker();
+  tick();
   const p = state.queue[state.i];
   const picked = state.order[n];
   const buttons = $("options").querySelectorAll("button");
@@ -118,7 +149,7 @@ function answer(n) {
   } else {
     state.streak = 0;
   }
-  state.results.push({ title: `${p.name}: ${p.title}`, difficulty: p.difficulty, correct: picked.correct });
+  state.results.push({ title: `${p.name}: ${p.title}`, difficulty: p.difficulty, correct: picked.correct, ms });
 
   buttons.forEach((b, k) => {
     b.disabled = true;
@@ -156,11 +187,18 @@ function finish() {
   $("summary").textContent =
     `${right} of ${state.results.length} correct, best streak ${state.bestStreak}.` +
     (isBest ? " New personal best." : best ? ` Personal best: ${best}.` : "");
+  const times = state.results.map((r) => r.ms);
+  $("endTotal").textContent = fmtClock(state.totalMs);
+  $("endAvg").textContent = fmtSec(state.totalMs / times.length);
+  $("endFast").textContent = fmtSec(Math.min(...times));
+  $("endSlow").textContent = fmtSec(Math.max(...times));
   $("review").innerHTML = state.results
     .map((r) => `<li><span class="mark ${r.correct ? "ok" : "no"}">${r.correct ? "✓" : "✗"}</span>` +
-      `<span>${esc(r.title)} <span class="muted">(${r.difficulty})</span></span></li>`)
+      `<span>${esc(r.title)} <span class="muted">(${r.difficulty})</span></span>` +
+      `<span class="time">${fmtSec(r.ms)}</span></li>`)
     .join("");
   show("end");
+  window.scrollTo({ top: 0 });
 }
 
 function renderStart() {
@@ -177,6 +215,10 @@ $("filters").addEventListener("click", (e) => {
 $("next").addEventListener("click", next);
 $("again").addEventListener("click", renderStart);
 document.addEventListener("keydown", (e) => {
+  if (!$("end").hidden) {
+    if (e.key === "Enter" && !e.repeat) { e.preventDefault(); renderStart(); }
+    return;
+  }
   if ($("play").hidden) return;
   if (!state.answered && /^[1-4]$/.test(e.key)) answer(Number(e.key) - 1);
   else if (state.answered && e.key === "Enter") { e.preventDefault(); next(); }

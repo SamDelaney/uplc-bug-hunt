@@ -14,6 +14,8 @@
         <span>Round <b id="round"></b></span>
         <span>Score <b id="score">0</b></span>
         <span>Streak <b id="streak">0</b></span>
+        <span>Time <b id="qtime">0.0s</b></span>
+        <span>Total <b id="ttime">0:00</b></span>
       </div>
     </header>
 
@@ -54,6 +56,12 @@
     <section id="end" class="card" hidden>
       <h2 id="final"></h2>
       <p id="summary"></p>
+      <div class="times">
+        <div><span>Total time</span><b id="endTotal"></b></div>
+        <div><span>Average</span><b id="endAvg"></b></div>
+        <div><span>Fastest</span><b id="endFast"></b></div>
+        <div><span>Slowest</span><b id="endSlow"></b></div>
+      </div>
       <ul class="review" id="review"></ul>
       <button class="primary" id="again">Play again</button>
     </section>
