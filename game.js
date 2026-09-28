@@ -84,7 +84,7 @@ function renderPuzzle() {
   $("streak").textContent = state.streak;
   $("diff").textContent = p.difficulty;
   $("diff").className = `badge ${p.difficulty}`;
-  $("title").textContent = p.title;
+  $("title").textContent = p.name;
   $("context").textContent = p.context;
   $("code").innerHTML = highlight(p.code);
   $("reveal").hidden = true;
@@ -118,7 +118,7 @@ function answer(n) {
   } else {
     state.streak = 0;
   }
-  state.results.push({ title: p.title, difficulty: p.difficulty, correct: picked.correct });
+  state.results.push({ title: `${p.name}: ${p.title}`, difficulty: p.difficulty, correct: picked.correct });
 
   buttons.forEach((b, k) => {
     b.disabled = true;
@@ -129,6 +129,7 @@ function answer(n) {
   const v = $("verdict");
   v.textContent = picked.correct ? `Correct. +${gained}` : "Not quite.";
   v.className = `verdict ${picked.correct ? "right" : "wrong"}`;
+  $("bug").textContent = p.title;
   $("explain").textContent = p.explain;
   $("fix").innerHTML = highlight(p.fix);
   $("next").textContent = state.i + 1 < state.queue.length ? "Next" : "See results";

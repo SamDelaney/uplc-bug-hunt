@@ -26,4 +26,4 @@ The workflow turns Pages on for the repo itself (`enablement: true`). If that st
 - `game.js`: game loop, scoring and a small UPLC syntax highlighter.
 - `style.css`: styles, with light and dark themes.
 
-To add a puzzle, append an object to `PUZZLES` with `id`, `title`, `difficulty` (`easy`/`medium`/`hard`), `context`, `code`, `options`, `explain` and `fix`.
+To add a puzzle, append an object to `PUZZLES` with `id`, `name` (shown while answering, so it must not hint at the bug), `title` (the bug's name, shown after answering), `difficulty` (`easy`/`medium`/`hard`), `context`, `code`, `options`, `explain` and `fix`.
