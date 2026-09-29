@@ -23,11 +23,22 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # Only the files the page needs; README and workflow stay out of the site.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # Runs every puzzle and practice problem through the committed wasm evaluator;
+      # a wrong answer key or a broken build stops the deploy.
+      - name: Verify puzzles and problems
+        run: node scripts/verify.mjs
+
+      # Only the files the pages need; README, sources and workflow stay out of the site.
       - name: Stage site
         run: |
-          mkdir _site
-          cp index.html style.css game.js puzzles.js .nojekyll _site/
+          mkdir -p _site/pkg
+          cp index.html practice.html style.css highlight.js game.js puzzles.js problems.js \
+             practice.js evaluator.js evaluator-worker.js .nojekyll _site/
+          cp pkg/uplc_eval.js pkg/uplc_eval_bg.wasm _site/pkg/
 
       - uses: actions/configure-pages@v5
         with:

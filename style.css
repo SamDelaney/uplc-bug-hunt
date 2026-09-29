@@ -121,3 +121,53 @@ button.primary { background: var(--accent); color: #17140c; border-color: var(--
 .review .mark { font-family: var(--mono); width: 1.2em; }
 .review .ok { color: var(--good); }
 .review .no { color: var(--bad); }
+
+/* ---------- practice page ---------- */
+a { color: var(--accent); }
+.practice-link { margin-bottom: 0; }
+body.practice main { max-width: 1180px; }
+.top h1 a { color: inherit; text-decoration: none; }
+.top h1 small { font-size: 0.9rem; color: var(--muted); font-weight: 600; margin-left: 6px; }
+.layout { display: grid; grid-template-columns: 240px minmax(0, 1fr); gap: 16px; align-items: start; }
+.problems { padding: 10px; position: sticky; top: 16px; }
+.problems ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+.problems button {
+  width: 100%; display: flex; align-items: center; gap: 8px; text-align: left;
+  border-color: transparent; background: none; padding: 8px 10px;
+}
+.problems button.active { background: var(--panel-2); border-color: var(--border); }
+.problems .name { flex: 1; font-size: 0.92rem; }
+.problems .ok { color: var(--good); font-weight: 700; }
+.problems .badge { font-size: 0.62rem; padding: 2px 6px; }
+
+.editor-wrap { margin-bottom: 12px; }
+#editor {
+  width: 100%; min-height: 300px; resize: vertical; display: block;
+  font: 0.9rem/1.6 var(--mono); tab-size: 2;
+  color: var(--text); background: var(--panel-2);
+  border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px;
+}
+#editor:focus { outline: 2px solid var(--accent); outline-offset: -1px; }
+.actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
+.kbd { font: 600 0.7rem var(--mono); opacity: 0.7; margin-left: 6px; }
+button:disabled { opacity: 0.6; cursor: progress; }
+
+.results { padding: 8px 12px; overflow-x: auto; }
+.results table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+.results td { padding: 10px 8px; border-bottom: 1px solid var(--border); vertical-align: top; }
+.results tr:last-child td { border-bottom: 0; }
+.results code { font-family: var(--mono); white-space: pre-wrap; word-break: break-word; }
+.results .label { margin: 0 0 2px; }
+.results .mark { font-weight: 700; width: 1.5em; }
+.results tr.pass .mark { color: var(--good); }
+.results tr.fail .mark, .results tr.fail .got { color: var(--bad); }
+.results .cost { font-family: var(--mono); color: var(--muted); white-space: nowrap; text-align: right; }
+.results .logs { font: 0.8rem var(--mono); color: var(--muted); margin-top: 4px; }
+
+@media (max-width: 760px) {
+  .layout { grid-template-columns: 1fr; }
+  .problems { position: static; }
+  .results td { display: block; border: 0; padding: 4px 8px; }
+  .results tr { display: block; border-bottom: 1px solid var(--border); padding: 6px 0; }
+  .results .cost { text-align: left; }
+}

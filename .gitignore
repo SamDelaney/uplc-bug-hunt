@@ -1,0 +1,2 @@
+# Rust build output (hundreds of MB); the built bundle lives in pkg/, which is committed.
+evaluator/target/

@@ -1,0 +1,8 @@
+[resolver]
+# Pick dependency versions that still build on the pinned toolchain.
+incompatible-rust-versions = "fallback"
+
+[target.wasm32-unknown-unknown]
+# wasm's default 1 MB stack is not enough for deep terms: freeing a long environment
+# chain recurses, which is what overflowed the native Aiken CLI on a runaway fixpoint.
+rustflags = ["-C", "link-arg=-zstack-size=16777216"]

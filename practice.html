@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>UPLC Practice</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="practice">
+  <main>
+    <header class="top">
+      <h1><a href="index.html">UPLC <span>Bug Hunt</span></a> <small>practice</small></h1>
+      <span class="muted" id="engine">loading evaluator</span>
+    </header>
+
+    <div class="layout">
+      <nav class="card problems" aria-label="Problems">
+        <ol id="problemList"></ol>
+      </nav>
+
+      <section class="work">
+        <div class="card">
+          <div class="meta">
+            <span class="badge" id="diff"></span>
+            <h2 id="title"></h2>
+          </div>
+          <p id="statement"></p>
+          <p class="muted" id="refLine"></p>
+        </div>
+
+        <div class="editor-wrap">
+          <textarea id="editor" wrap="off" spellcheck="false" autocapitalize="off" autocomplete="off"></textarea>
+        </div>
+        <div class="actions">
+          <button class="primary" id="run">Run tests <span class="kbd">Ctrl+Enter</span></button>
+          <button id="reset">Reset to starter</button>
+          <span class="muted" id="status"></span>
+        </div>
+
+        <div class="card" id="summary" hidden></div>
+        <div class="card results" id="results" hidden></div>
+        <div class="card" id="reference" hidden>
+          <p class="label">Reference solution</p>
+          <pre class="code" id="refCode"></pre>
+        </div>
+      </section>
+    </div>
+  </main>
+  <script src="highlight.js"></script>
+  <script src="problems.js"></script>
+  <script type="module" src="practice.js"></script>
+</body>
+</html>
