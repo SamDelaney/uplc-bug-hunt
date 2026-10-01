@@ -152,8 +152,8 @@ function finish() {
 
   $("final").textContent = `${state.score} points`;
   $("summary").textContent =
-    `${right} of ${state.results.length} correct, best streak ${state.bestStreak}.` +
-    (isBest ? " New personal best." : best ? ` Personal best: ${best}.` : "");
+    `${right}/${state.results.length} correct, streak ${state.bestStreak}.` +
+    (isBest ? " New best." : best ? ` Best: ${best}.` : "");
   const times = state.results.map((r) => r.ms);
   $("endTotal").textContent = fmtClock(state.totalMs);
   $("endAvg").textContent = fmtSec(state.totalMs / times.length);
@@ -170,7 +170,12 @@ function finish() {
 
 function renderStart() {
   const best = loadBest();
-  $("best").textContent = `${PUZZLES.length} puzzles, ${ROUND_SIZE} per round.` + (best ? ` Personal best: ${best}.` : "");
+  $("best").textContent = best ? `Best: ${best}` : "";
+  let solved = 0;
+  for (const p of PROBLEMS) {
+    try { if (localStorage.getItem(`uplc-practice:best:${p.id}`)) solved++; } catch {}
+  }
+  $("challengeStats").textContent = solved ? `Solved: ${solved}/${PROBLEMS.length}` : "";
   show("start");
 }
 

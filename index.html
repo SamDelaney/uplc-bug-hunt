@@ -19,17 +19,28 @@
       </div>
     </header>
 
-    <section id="start" class="card">
-      <p class="lede">Each round shows a snippet of Untyped Plutus Core and what it was <em>meant</em> to do. Find the bug.</p>
-      <p class="muted">Easy is worth 100, medium 200, hard 300. Each correct answer in a row adds 25% to the next one, up to double. Keys 1 to 4 answer, Enter continues.</p>
-      <div class="filters" id="filters">
-        <button data-filter="all" class="primary">All puzzles</button>
-        <button data-filter="easy">Easy</button>
-        <button data-filter="medium">Medium</button>
-        <button data-filter="hard">Hard</button>
+    <section id="start">
+      <div class="modes">
+        <div class="card mode">
+          <h2>Bug Hunt</h2>
+          <p>Find the bug in each snippet. Keys 1 to 4 answer, Enter continues.</p>
+          <div class="mode-actions" id="filters">
+            <button data-filter="all" class="primary">Start</button>
+            <button data-filter="easy">Easy</button>
+            <button data-filter="medium">Medium</button>
+            <button data-filter="hard">Hard</button>
+          </div>
+          <p class="muted" id="best"></p>
+        </div>
+        <div class="card mode">
+          <h2>Coding Challenges</h2>
+          <p>Write UPLC that passes the tests. Ctrl+Enter runs them.</p>
+          <div class="mode-actions">
+            <a class="button primary" href="practice.html">Start</a>
+          </div>
+          <p class="muted" id="challengeStats"></p>
+        </div>
       </div>
-      <p class="muted" id="best"></p>
-      <p class="practice-link"><a href="practice.html">Practice mode: write your own UPLC and run it against tests</a></p>
     </section>
 
     <section id="play" hidden>
@@ -69,6 +80,7 @@
   </main>
   <script src="highlight.js"></script>
   <script src="puzzles.js"></script>
+  <script src="problems.js"></script>
   <script src="game.js"></script>
 </body>
 </html>

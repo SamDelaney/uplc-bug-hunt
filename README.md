@@ -3,7 +3,7 @@
 Two ways to practise Untyped Plutus Core:
 
 - **Quiz** (`index.html`): each round shows a UPLC snippet and what it was meant to do, and you pick what's wrong with it. After each answer you get an explanation and a fixed version of the code.
-- **Practice** (`practice.html`): leetcode-style problems. You write the UPLC; it runs in your browser against each problem's tests, and a passing solution is ranked by its CPU and memory costs and its script size against a reference solution.
+- **Coding challenges** (`practice.html`): leetcode-style problems. You write the UPLC; it runs in your browser against each problem's tests, and a passing solution is ranked by its CPU and memory costs and its script size against a reference solution.
 
 Programs are evaluated by Aiken's `uplc` crate (1.1.21), compiled to WebAssembly and run in a Web Worker. No server is involved.
 

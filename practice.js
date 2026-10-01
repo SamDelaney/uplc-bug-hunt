@@ -46,8 +46,8 @@ function showBest() {
   const best = store.get(`best:${current.id}`, null);
   const ref = refCosts[current.id];
   const parts = [];
-  if (ref) parts.push(`Reference solution: ${costLine(ref)}.`);
-  if (best) parts.push(`Your best: ${costLine(best)}.`);
+  if (ref) parts.push(`Reference: ${costLine(ref)}.`);
+  if (best) parts.push(`Best: ${costLine(best)}.`);
   $("refLine").textContent = parts.join(" ");
 }
 
@@ -76,7 +76,7 @@ async function open(id) {
 function describeError(run) {
   const err = run.error || "";
   if (run.stage === "eval" && err.includes("over budget")) {
-    return `Out of budget: this test's cap is ${fmt(SITE_BUDGET.cpu)} CPU and ${fmt(SITE_BUDGET.mem)} memory. Look for recursion that never stops.`;
+    return `Out of budget (cap: ${fmt(SITE_BUDGET.cpu)} CPU, ${fmt(SITE_BUDGET.mem)} memory).`;
   }
   const free = run.stage === "scope" && err.match(/with name (\S+)/);
   if (free) return `${STAGE.scope}: ${free[1]} is not bound by any enclosing lam.`;
@@ -96,7 +96,7 @@ function renderResults(verdict) {
     </tr>`;
   });
   const skipped = verdict.results.length < current.tests.length
-    ? `<p class="muted">Remaining tests skipped: this error would repeat for every one.</p>` : "";
+    ? `<p class="muted">Remaining tests skipped.</p>` : "";
   $("results").innerHTML = `<table>${rows.join("")}</table>${skipped}`;
   $("results").hidden = false;
 }
@@ -105,7 +105,7 @@ function renderSummary(verdict) {
   const total = current.tests.length;
   const box = $("summary");
   if (!verdict.all) {
-    box.innerHTML = `<p class="verdict wrong">${verdict.passed} of ${total} tests pass.</p>`;
+    box.innerHTML = `<p class="verdict wrong">${verdict.passed}/${total} tests pass.</p>`;
     box.hidden = false;
     return;
   }
@@ -116,12 +116,12 @@ function renderSummary(verdict) {
   if (isBest) store.set(`best:${current.id}`, mine);
 
   const pct = (a, b) => (b ? `${Math.round((a / b) * 100)}%` : "n/a");
-  box.innerHTML = `<p class="verdict right">All ${total} tests pass.${isBest && best ? " New personal best." : ""}</p>
+  box.innerHTML = `<p class="verdict right">All ${total} tests pass.${isBest && best ? " New best." : ""}</p>
     <div class="times">
-      <div><span>CPU (all tests)</span><b>${fmt(mine.cpu)}</b></div>
+      <div><span>CPU</span><b>${fmt(mine.cpu)}</b></div>
       <div><span>Memory</span><b>${fmt(mine.mem)}</b></div>
-      <div><span>Script size</span><b>${fmt(mine.size)} B</b></div>
-      ${ref ? `<div><span>CPU vs reference</span><b>${pct(mine.cpu, ref.cpu)}</b></div>` : ""}
+      <div><span>Size</span><b>${fmt(mine.size)} B</b></div>
+      ${ref ? `<div><span>vs reference</span><b>${pct(mine.cpu, ref.cpu)}</b></div>` : ""}
     </div>`;
   box.hidden = false;
   $("refCode").innerHTML = highlight(current.reference);
@@ -173,7 +173,7 @@ $("editor").addEventListener("keydown", (e) => {
 
 evaluator.version().then((v) => {
   $("engine").textContent = typeof v === "string"
-    ? `Evaluator: ${v} (Aiken), running in your browser. Budget per test: ${fmt(SITE_BUDGET.cpu)} CPU, ${fmt(SITE_BUDGET.mem)} memory (a tenth of a mainnet transaction).`
+    ? `Aiken ${v}`
     : `Evaluator unavailable: ${v.error}`;
 });
 open(store.get("last", PROBLEMS[0].id));

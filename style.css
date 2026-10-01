@@ -124,7 +124,21 @@ button.primary { background: var(--accent); color: #17140c; border-color: var(--
 
 /* ---------- practice page ---------- */
 a { color: var(--accent); }
-.practice-link { margin-bottom: 0; }
+.modes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.mode { display: flex; flex-direction: column; margin-bottom: 0; }
+.mode .label { margin: 0 0 4px; }
+.mode h2 { margin: 0 0 10px; font-size: 1.3rem; }
+.mode p { margin: 0 0 10px; }
+.mode-actions { display: flex; gap: 8px; flex-wrap: wrap; margin: auto 0 10px; padding-top: 8px; }
+.mode-actions { align-items: center; }
+.mode-actions button:not(.primary) { font-size: 0.85rem; padding: 6px 10px; }
+.mode > .muted:last-child { margin-bottom: 0; min-height: 1.5em; }
+a.button {
+  display: inline-block; text-decoration: none; border-radius: 8px; padding: 9px 16px;
+  border: 1px solid var(--border); background: var(--panel-2); color: var(--text);
+}
+a.button.primary { background: var(--accent); color: #17140c; border-color: var(--accent); font-weight: 600; }
+@media (max-width: 640px) { .modes { grid-template-columns: 1fr; } }
 body.practice main { max-width: 1180px; }
 .top h1 a { color: inherit; text-decoration: none; }
 .top h1 small { font-size: 0.9rem; color: var(--muted); font-weight: 600; margin-left: 6px; }
@@ -171,3 +185,4 @@ button:disabled { opacity: 0.6; cursor: progress; }
   .results tr { display: block; border-bottom: 1px solid var(--border); padding: 6px 0; }
   .results .cost { text-align: left; }
 }
+.mode .muted:empty { display: none; }
