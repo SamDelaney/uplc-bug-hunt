@@ -84,6 +84,18 @@ const EXPECT = {
   "exact-threshold": [[I(3)], "FAIL", U],
   "int-as-bool": [[I(1)], "FAIL", '(con string "on")'],
   "key-vs-hash": [[BS(H224), BS("#01")], F, T],
+  "subtract-order": [[I(10), I(3)], I(-7), I(7)],
+  "slice-args": [[BS("#000643b0cafe")], BS("#"), BS("#000643b0")],
+  "validator-arg-order": [["(con data (I 42))", "(con data (I 7))", "(con data (I 0))"], U, "FAIL"],
+  "endianness": [[I(1)], BS("#0100"), BS("#0001")],
+  "lexicographic-compare": [[BS("#0100"), BS("#02")], T, F],
+  "fee-rounding": [[I(150)], I(1), I(2)],
+  "bool-constr-tag": [["(con data (Constr 1 []))"], F, T],
+  "lam-two-params": [[I(2), I(3)], "FAIL:parse", I(5)],
+  "paren-application": [[I(4)], "FAIL:parse", I(5)],
+  "force-a-lam": [[T], "FAIL", I(1)],
+  "partial-builtin-fine": [[], I(3), I(3)],
+  "string-length": [['(con string "sundae")'], "FAIL", I(6)],
 };
 
 let failures = 0;

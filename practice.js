@@ -34,11 +34,23 @@ const refCosts = {};
 let current = null;
 let saveTimer = null;
 
+// The list is grouped by difficulty; each group is a <details> the user can collapse.
+const LEVELS = ["easy", "medium", "hard"];
+const collapsed = new Set(store.get("collapsed", []));
+
 function renderList() {
-  $("problemList").innerHTML = PROBLEMS.map((p) => {
-    const solved = store.get(`best:${p.id}`, null) ? '<span class="ok">✓</span>' : "";
-    return `<li><button data-id="${p.id}" class="${p === current ? "active" : ""}">` +
-      `<span class="badge ${p.difficulty}">${p.difficulty}</span><span class="name">${esc(p.title)}</span>${solved}</button></li>`;
+  $("problemList").innerHTML = LEVELS.map((level) => {
+    const group = PROBLEMS.filter((p) => p.difficulty === level);
+    if (!group.length) return "";
+    const done = group.filter((p) => store.get(`best:${p.id}`, null)).length;
+    const items = group.map((p) => {
+      const solved = store.get(`best:${p.id}`, null) ? '<span class="ok">✓</span>' : "";
+      return `<li><button data-id="${p.id}" class="${p === current ? "active" : ""}">` +
+        `<span class="name">${esc(p.title)}</span>${solved}</button></li>`;
+    }).join("");
+    return `<details data-level="${level}"${collapsed.has(level) ? "" : " open"}>` +
+      `<summary><span class="badge ${level}">${level}</span><span class="count">${done}/${group.length}</span></summary>` +
+      `<ol>${items}</ol></details>`;
   }).join("");
 }
 
@@ -148,6 +160,14 @@ $("problemList").addEventListener("click", (e) => {
   const id = e.target.closest("button")?.dataset.id;
   if (id) open(id);
 });
+// "toggle" doesn't bubble, so listen in the capture phase to remember which groups are collapsed.
+$("problemList").addEventListener("toggle", (e) => {
+  const level = e.target.dataset?.level;
+  if (!level) return;
+  if (e.target.open) collapsed.delete(level);
+  else collapsed.add(level);
+  store.set("collapsed", [...collapsed]);
+}, true);
 $("run").addEventListener("click", run);
 $("reset").addEventListener("click", () => {
   $("editor").value = current.starter;

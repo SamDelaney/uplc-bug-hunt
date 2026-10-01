@@ -996,4 +996,312 @@ const PUZZLES = [
         owner
         [ (builtin blake2b_224) signerKey ] ])))`,
   },
+  {
+    id: "subtract-order",
+    name: "Change owed",
+    title: "Subtraction the wrong way round",
+    difficulty: "easy",
+    context: "Returns the change owed to a buyer: what they paid minus the price.",
+    code: `(program 1.1.0
+  (lam paid
+    (lam price
+      [ (builtin subtractInteger) price paid ])))`,
+    options: [
+      "subtractInteger a b is a - b, so this computes price minus paid and the change comes out negative",
+      "subtractInteger needs a force",
+      "Integers can't go below zero, so it fails",
+      "The two lam parameters are applied in reverse order",
+    ],
+    explain:
+      "Builtin arguments are positional: subtractInteger a b means a - b. Nothing fails, because UPLC integers are signed and unbounded, so the wrong sign flows silently into whatever uses it. Parameters are applied outermost first, so paid really is the first argument.",
+    fix: `(program 1.1.0
+  (lam paid
+    (lam price
+      [ (builtin subtractInteger) paid price ])))`,
+  },
+  {
+    id: "slice-args",
+    name: "Label prefix",
+    title: "Start and length swapped",
+    difficulty: "medium",
+    context: "Takes the first 4 bytes of an asset name (its CIP-68 label).",
+    code: `(program 1.1.0
+  (lam assetName
+    [ (builtin sliceByteString)
+      (con integer 4)
+      (con integer 0)
+      assetName ]))`,
+    options: [
+      "sliceByteString takes the start index, then the length. This asks for 0 bytes starting at index 4 and returns an empty bytestring",
+      "sliceByteString takes the bytestring first",
+      "sliceByteString needs a force",
+      "Indexes are 1-based, so the start should be 1",
+    ],
+    explain:
+      "The order is start, length, bytestring. Nothing fails here: sliceByteString never errors on its indexes, it just returns whatever part of the range exists, which makes swapped arguments easy to miss. Indexes are 0-based.",
+    fix: `(program 1.1.0
+  (lam assetName
+    [ (builtin sliceByteString)
+      (con integer 0)
+      (con integer 4)
+      assetName ]))`,
+  },
+  {
+    id: "validator-arg-order",
+    name: "Redeemer gate",
+    title: "The datum arrives first",
+    difficulty: "medium",
+    context: "PlutusV2 spending validator. It should succeed only when the redeemer is 42.",
+    code: `(program 1.0.0
+  (lam redeemer
+    (lam datum
+      (lam ctx
+        (force
+          [ (force (builtin ifThenElse))
+            [ (builtin equalsInteger)
+              [ (builtin unIData) redeemer ]
+              (con integer 42) ]
+            (delay (con unit ()))
+            (delay (error)) ])))))`,
+    options: [
+      "A V2 spending validator is applied to the datum first, then the redeemer. The variable named redeemer holds the datum, so a datum of 42 unlocks it for any redeemer",
+      "V2 validators take a single ScriptContext argument",
+      "unIData needs a force",
+      "The branches shouldn't be delayed",
+    ],
+    explain:
+      "Variable names mean nothing to the ledger; only position does. V1 and V2 spending validators receive datum, redeemer, context in that order. Here the check runs against whatever the datum is, and the spender's redeemer is ignored.",
+    fix: `(program 1.0.0
+  (lam datum
+    (lam redeemer
+      (lam ctx
+        (force
+          [ (force (builtin ifThenElse))
+            [ (builtin equalsInteger)
+              [ (builtin unIData) redeemer ]
+              (con integer 42) ]
+            (delay (con unit ()))
+            (delay (error)) ])))))`,
+  },
+  {
+    id: "endianness",
+    name: "Two-byte encoding",
+    title: "Little-endian by mistake",
+    difficulty: "medium",
+    context: "Encodes n as 2 bytes, most significant byte first.",
+    code: `(program 1.1.0
+  (lam n
+    [ (builtin integerToByteString)
+      (con bool False)
+      (con integer 2)
+      n ]))`,
+    options: [
+      "The first argument picks the byte order, and False means little-endian, so the least significant byte comes first. It should be True",
+      "The width and the integer are in the wrong order",
+      "integerToByteString needs a force",
+      "The integer has to be wrapped as Data first",
+    ],
+    explain:
+      "integerToByteString takes a byte-order flag (True for big-endian), a width in bytes, and the integer. With False, 1 encodes as #0100 instead of #0001. byteStringToInteger takes the same flag, so a mismatch between the two silently changes the number.",
+    fix: `(program 1.1.0
+  (lam n
+    [ (builtin integerToByteString)
+      (con bool True)
+      (con integer 2)
+      n ]))`,
+  },
+  {
+    id: "lexicographic-compare",
+    name: "Which is smaller?",
+    title: "Lexicographic, not numeric",
+    difficulty: "hard",
+    context:
+      "a and b are unsigned big-endian numbers stored as bytestrings, possibly of different lengths. Returns True if a is the smaller number.",
+    code: `(program 1.1.0
+  (lam a
+    (lam b
+      [ (builtin lessThanByteString) a b ])))`,
+    options: [
+      "lessThanByteString compares byte by byte from the left, so #0100 (256) counts as less than #02 (2). Convert both with byteStringToInteger first",
+      "lessThanByteString only compares lengths",
+      "Bytestrings can only be tested for equality, so this fails",
+      "The arguments are reversed",
+    ],
+    explain:
+      "Bytestring ordering is lexicographic, like dictionary order. It agrees with numeric order only when both values have the same length. For numbers of different lengths, decode them and compare as integers.",
+    fix: `(program 1.1.0
+  (lam a
+    (lam b
+      [ (builtin lessThanInteger)
+        [ (builtin byteStringToInteger) (con bool True) a ]
+        [ (builtin byteStringToInteger) (con bool True) b ] ])))`,
+  },
+  {
+    id: "fee-rounding",
+    name: "One percent fee",
+    title: "Rounds down, not up",
+    difficulty: "medium",
+    context: "The fee is 1% of the amount, rounded up to the next whole lovelace.",
+    code: `(program 1.1.0
+  (lam amount
+    [ (builtin divideInteger) amount (con integer 100) ]))`,
+    options: [
+      "divideInteger rounds down, so an amount of 150 gives a fee of 1 instead of 2. Add 99 before dividing",
+      "divideInteger's arguments are reversed",
+      "1% needs a multiplyInteger by 100",
+      "divideInteger fails when the division isn't exact",
+    ],
+    explain:
+      "There is no rounding-up division builtin. The usual trick for positive numbers is (amount + divisor - 1) / divisor. Rounding direction decides who keeps the leftover lovelace, and over many transactions it adds up.",
+    fix: `(program 1.1.0
+  (lam amount
+    [ (builtin divideInteger)
+      [ (builtin addInteger) amount (con integer 99) ]
+      (con integer 100) ]))`,
+  },
+  {
+    id: "bool-constr-tag",
+    name: "Is the flag set?",
+    title: "True is Constr 1",
+    difficulty: "hard",
+    context: "flag is a Bool encoded as Data. Returns (con bool True) when the flag is True.",
+    code: `(program 1.1.0
+  (lam flag
+    [ (builtin equalsInteger)
+      [ (force (force (builtin fstPair)))
+        [ (builtin unConstrData) flag ] ]
+      (con integer 0) ]))`,
+    options: [
+      "As Data, False is Constr 0 and True is Constr 1, because constructors are numbered in declaration order. This returns True for False",
+      "fstPair needs only one force",
+      "unConstrData returns the fields, not the tag",
+      "A Bool is encoded as I 0 or I 1, so unConstrData fails",
+    ],
+    explain:
+      "Bool is declared as False | True, so False gets tag 0. It's easy to assume the opposite. The same rule applies to any type: Nothing and Just, or your own redeemer variants, are numbered in the order they are declared.",
+    fix: `(program 1.1.0
+  (lam flag
+    [ (builtin equalsInteger)
+      [ (force (force (builtin fstPair)))
+        [ (builtin unConstrData) flag ] ]
+      (con integer 1) ]))`,
+  },
+  {
+    id: "lam-two-params",
+    name: "Add two",
+    title: "lam binds one variable",
+    difficulty: "easy",
+    context: "Adds two integers.",
+    code: `(program 1.1.0
+  (lam a b
+    [ (builtin addInteger) a b ]))`,
+    options: [
+      "lam binds exactly one variable. Two parameters need nested lams: (lam a (lam b ...))",
+      "addInteger needs a force",
+      "Parameters need type annotations",
+      "A program can't start with a lam",
+    ],
+    explain:
+      "Every function in UPLC takes one argument. Multi-argument functions are curried: a lam that returns another lam. The parser rejects this program before anything runs.",
+    fix: `(program 1.1.0
+  (lam a
+    (lam b
+      [ (builtin addInteger) a b ])))`,
+  },
+  {
+    id: "paren-application",
+    name: "Increment",
+    title: "Application needs square brackets",
+    difficulty: "easy",
+    context: "Returns n + 1.",
+    code: `(program 1.1.0
+  (lam n
+    ((builtin addInteger) n (con integer 1))))`,
+    options: [
+      "Application is written with square brackets: [ (builtin addInteger) n (con integer 1) ]. Parentheses are only for keyword forms like lam and con",
+      "addInteger needs a force",
+      "addInteger takes the constant first",
+      "A constant can't be passed directly as an argument",
+    ],
+    explain:
+      "In the textual syntax, parentheses always start with a keyword (program, lam, delay, force, builtin, con, error, constr, case). Applying a function to arguments uses [ f x y ]. The parser rejects this program.",
+    fix: `(program 1.1.0
+  (lam n
+    [ (builtin addInteger) n (con integer 1) ]))`,
+  },
+  {
+    id: "force-a-lam",
+    name: "Lazy choice",
+    title: "force needs a delay",
+    difficulty: "medium",
+    context: "Returns 1 when flag is True and 2 otherwise, without evaluating the branch that isn't chosen.",
+    code: `(program 1.1.0
+  (lam flag
+    (force
+      [ (force (builtin ifThenElse))
+        flag
+        (lam u (con integer 1))
+        (lam u (con integer 2)) ])))`,
+    options: [
+      "force only works on a delay (or on a builtin waiting for a type). Forcing a lam fails. Use delay for the branches, or apply the chosen lam to an argument",
+      "ifThenElse needs two forces",
+      "The branches are in the wrong order",
+      "u is never used, so the program is rejected",
+    ],
+    explain:
+      "A lam and a delay both postpone evaluation, but they are opened differently: a lam by applying it, a delay by forcing it. Mixing them up fails at run time. Unused variables are fine.",
+    fix: `(program 1.1.0
+  (lam flag
+    (force
+      [ (force (builtin ifThenElse))
+        flag
+        (delay (con integer 1))
+        (delay (con integer 2)) ])))`,
+  },
+  {
+    id: "partial-builtin-fine",
+    name: "Add one helper",
+    title: "Nothing wrong",
+    difficulty: "medium",
+    context: "What goes wrong when this program is evaluated?",
+    code: `(program 1.1.0
+  [ (lam addOne
+      [ addOne (con integer 2) ])
+    [ (builtin addInteger) (con integer 1) ] ])`,
+    options: [
+      "Nothing. A partially applied builtin is a value that can be passed around, and the result is (con integer 3)",
+      "addInteger is given only one argument, so it fails",
+      "Builtins can't be bound to variables",
+      "addInteger needs a force",
+    ],
+    explain:
+      "A builtin that hasn't received all its arguments yet is an ordinary value. It can be bound, passed and applied later, which is how helpers like addOne are usually built.",
+    fix: `-- No change needed.
+(program 1.1.0
+  [ (lam addOne
+      [ addOne (con integer 2) ])
+    [ (builtin addInteger) (con integer 1) ] ])`,
+  },
+  {
+    id: "string-length",
+    name: "Text length",
+    title: "A string is not a bytestring",
+    difficulty: "easy",
+    context: "name is a text string, such as a token's display name. Returns its length in bytes.",
+    code: `(program 1.1.0
+  (lam name
+    [ (builtin lengthOfByteString) name ]))`,
+    options: [
+      "lengthOfByteString only accepts a bytestring, and name is a string. Convert it with encodeUtf8 first",
+      "lengthOfByteString needs a force",
+      "Strings are measured with lengthOfString",
+      "Strings and bytestrings are the same type, so the result is in characters, not bytes",
+    ],
+    explain:
+      "string and bytestring are separate types, with encodeUtf8 and decodeUtf8 to go between them. There is no builtin for the length of a string, so encoding to bytes first is the only route.",
+    fix: `(program 1.1.0
+  (lam name
+    [ (builtin lengthOfByteString)
+      [ (builtin encodeUtf8) name ] ]))`,
+  },
 ];
