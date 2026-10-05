@@ -191,6 +191,18 @@ $("editor").addEventListener("keydown", (e) => {
   }
 });
 
+// The draft goes along only when it differs from the starter; otherwise it says nothing new.
+bindReport($("report"), () => {
+  const p = current;
+  if (!p) return { title: "", where: "Coding challenges" };
+  const code = $("editor").value;
+  return {
+    title: `Challenge "${p.title}": `,
+    where: `Coding challenge \`${p.id}\` (${p.title}), ${$("engine").textContent}`,
+    code: code.trim() === p.starter.trim() ? "" : code,
+  };
+});
+
 evaluator.version().then((v) => {
   $("engine").textContent = typeof v === "string"
     ? `Aiken ${v}`

@@ -34,7 +34,10 @@
   <body>
     <main>
       <header class="top">
-        <h1>🔎 UPLC <span>Bug Hunt</span></h1>
+        <h1>
+          <a class="home" href="index.html" aria-label="Home" title="Home">←</a>
+          <a href="index.html">🔎 UPLC <span>Bug Hunt</span></a>
+        </h1>
         <div class="hud" id="hud" hidden>
           <span>Round <b id="round"></b></span>
           <span>Score <b id="score">0</b></span>
@@ -89,6 +92,14 @@
           <p class="label">Fixed</p>
           <pre class="code" id="fix"></pre>
           <button class="primary" id="next">Next</button>
+          <a
+            class="report"
+            id="reportPuzzle"
+            href="https://github.com/samdelaney/uplc-bug-hunt/issues/new"
+            target="_blank"
+            rel="noopener"
+            >Report a problem with this puzzle</a
+          >
         </div>
       </section>
 
@@ -104,8 +115,20 @@
         <ul class="review" id="review"></ul>
         <button class="primary" id="again">Play again</button>
       </section>
+
+      <footer class="foot" id="foot">
+        <a
+          class="report"
+          id="reportSite"
+          href="https://github.com/samdelaney/uplc-bug-hunt/issues/new"
+          target="_blank"
+          rel="noopener"
+          >Report an issue</a
+        >
+      </footer>
     </main>
     <script src="highlight.js"></script>
+    <script src="report.js"></script>
     <script src="puzzles.js"></script>
     <script src="problems.js"></script>
     <script src="game.js"></script>

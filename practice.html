@@ -19,7 +19,10 @@
 <body class="practice">
   <main>
     <header class="top">
-      <h1><a href="index.html">UPLC <span>Bug Hunt</span></a> <small>challenges</small></h1>
+      <h1>
+        <a class="home" href="index.html" aria-label="Home" title="Home">←</a>
+        <a href="index.html">UPLC <span>Bug Hunt</span></a> <small>challenges</small>
+      </h1>
       <span class="muted" id="engine">Loading</span>
     </header>
 
@@ -45,6 +48,7 @@
           <button class="primary" id="run">Run <span class="kbd">Ctrl+Enter</span></button>
           <button id="reset">Reset</button>
           <span class="muted" id="status"></span>
+          <a class="report" id="report" href="https://github.com/samdelaney/uplc-bug-hunt/issues/new" target="_blank" rel="noopener">Report an issue</a>
         </div>
 
         <div class="card" id="summary" hidden></div>
@@ -57,6 +61,7 @@
     </div>
   </main>
   <script src="highlight.js"></script>
+  <script src="report.js"></script>
   <script src="problems.js"></script>
   <script type="module" src="practice.js"></script>
 </body>

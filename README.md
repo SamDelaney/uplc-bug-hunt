@@ -51,6 +51,7 @@ If the first run fails on permissions, set **Settings → Pages → Source** to 
 - `practice.js`: the practice page.
 - `evaluator.js`, `evaluator-worker.js`: the main-thread client and the worker that runs the wasm.
 - `highlight.js`: UPLC syntax highlighting, shared by both pages.
+- `report.js`: the "Report an issue" links. They open a new GitHub issue with the puzzle or problem (and, on the challenges page, your code) filled in; nothing is sent until you submit it on GitHub. The repo URL is the constant at the top of the file.
 - `style.css`: styles, with light and dark themes.
 - `social-preview.png`: the link-preview image both pages point to in their `og:image` tags. Its source is `scripts/social-preview.html`; re-render with headless Edge or Chrome: `msedge --headless=new --hide-scrollbars --window-size=1280,640 --screenshot=social-preview.png scripts/social-preview.html`. The tags use the absolute GitHub Pages URL, so update them if the site moves.
 

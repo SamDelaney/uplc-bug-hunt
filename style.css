@@ -196,3 +196,32 @@ button:disabled { opacity: 0.6; cursor: progress; }
   .results .cost { text-align: left; }
 }
 .mode .muted:empty { display: none; }
+
+/* ---------- report links ---------- */
+.report { color: var(--muted); font-size: 0.85rem; }
+.report:hover { color: var(--accent); }
+.reveal .report { margin-left: 14px; }
+.actions .report { margin-left: auto; }
+.foot { margin-top: 48px; text-align: center; }
+/* The footer link gives way to the per-puzzle one during a round. */
+main:has(#play:not([hidden])) .foot { display: none; }
+
+/* ---------- home button ---------- */
+/* An arrow hanging in the page margin to the left of the title. */
+.top h1 { position: relative; }
+.top h1 a.home {
+  position: absolute; right: 100%; top: 50%; transform: translateY(-50%); margin-right: 14px;
+  display: grid; place-items: center; width: 32px; height: 32px;
+  font: 400 1rem/1 system-ui, sans-serif; letter-spacing: 0; color: var(--muted);
+  border: 1px solid var(--border); border-radius: 8px; background: var(--panel-2);
+}
+.top h1 a.home:hover { color: var(--accent); border-color: var(--accent); }
+/* The quiz's start screen is home already. */
+main:has(#start:not([hidden])) .home { display: none; }
+/* No margin to hang in on narrow screens, so the arrow sits inline before the title. */
+@media (max-width: 940px) {
+  body:not(.practice) .top h1 a.home { position: static; transform: none; display: inline-grid; vertical-align: middle; margin-right: 8px; }
+}
+@media (max-width: 1300px) {
+  body.practice .top h1 a.home { position: static; transform: none; display: inline-grid; vertical-align: middle; margin-right: 8px; }
+}

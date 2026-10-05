@@ -196,4 +196,12 @@ document.addEventListener("keydown", (e) => {
   else if (state.answered && e.key === "Enter") { e.preventDefault(); next(); }
 });
 
+bindReport($("reportSite"), () => ({ title: "", where: "Quiz" }));
+bindReport($("reportPuzzle"), () => {
+  const p = state?.queue[state.i];
+  return p
+    ? { title: `Puzzle "${p.name}": `, where: `Quiz puzzle \`${p.id}\` (${p.name}: ${p.title})` }
+    : { title: "", where: "Quiz" };
+});
+
 renderStart();
