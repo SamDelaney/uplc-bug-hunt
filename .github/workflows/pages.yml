@@ -37,7 +37,7 @@ jobs:
         run: |
           mkdir -p _site/pkg
           cp index.html practice.html style.css highlight.js game.js puzzles.js problems.js \
-             practice.js evaluator.js evaluator-worker.js .nojekyll _site/
+             practice.js evaluator.js evaluator-worker.js social-preview.png .nojekyll _site/
           cp pkg/uplc_eval.js pkg/uplc_eval_bg.wasm _site/pkg/
 
       - uses: actions/configure-pages@v5

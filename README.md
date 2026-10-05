@@ -52,6 +52,7 @@ If the first run fails on permissions, set **Settings → Pages → Source** to 
 - `evaluator.js`, `evaluator-worker.js`: the main-thread client and the worker that runs the wasm.
 - `highlight.js`: UPLC syntax highlighting, shared by both pages.
 - `style.css`: styles, with light and dark themes.
+- `social-preview.png`: the link-preview image both pages point to in their `og:image` tags. Its source is `scripts/social-preview.html`; re-render with headless Edge or Chrome: `msedge --headless=new --hide-scrollbars --window-size=1280,640 --screenshot=social-preview.png scripts/social-preview.html`. The tags use the absolute GitHub Pages URL, so update them if the site moves.
 
 To add a puzzle, append an object to `PUZZLES` with `id`, `name` (shown while answering, so it must not hint at the bug), `title` (the bug's name, shown after answering), `difficulty` (`easy`/`medium`/`hard`), `context`, `code`, `options`, `explain` and `fix`.
 

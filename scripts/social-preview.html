@@ -1,0 +1,59 @@
+<!doctype html>
+<!-- Source for social-preview.png (1280x640). Render command is in the README. -->
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<style>
+  :root {
+    --bg: #0f1115; --panel: #171a21; --border: #2a2f3a; --text: #e6e8ee; --muted: #8b93a5;
+    --accent: #f0b429; --good: #3fb97f; --bad: #ef5d5d;
+    --t-kw: #c792ea; --t-builtin: #82aaff; --t-type: #ffcb6b; --t-num: #f78c6c; --t-str: #c3e88d; --t-bracket: #8b93a5;
+    --mono: "Cascadia Code", "Cascadia Mono", Consolas, monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; width: 1280px; height: 640px; overflow: hidden; }
+  body {
+    background: var(--bg); color: var(--text);
+    font: 26px/1.45 "Segoe UI", system-ui, sans-serif;
+    display: grid; grid-template-columns: 470px 1fr; gap: 48px; align-items: center;
+    padding: 64px 72px;
+  }
+  h1 { font: 700 84px/1.02 var(--mono); letter-spacing: -0.03em; margin: 0 0 28px; }
+  h1 span { color: var(--accent); display: block; }
+  p { margin: 0; color: var(--muted); }
+  .badges { display: flex; gap: 12px; margin-top: 36px; }
+  .badge { font: 600 17px var(--mono); text-transform: uppercase; letter-spacing: 0.06em; padding: 6px 14px; border-radius: 999px; border: 2px solid currentColor; }
+  .easy { color: var(--good); } .medium { color: var(--accent); } .hard { color: var(--bad); }
+  .card { background: var(--panel); border: 2px solid var(--border); border-radius: 20px; padding: 32px 34px; }
+  .intent { font-size: 22px; color: var(--text); margin-bottom: 22px; }
+  .intent b { font: 600 15px var(--mono); text-transform: uppercase; color: var(--muted); margin-right: 10px; letter-spacing: 0.04em; }
+  pre { margin: 0; font: 23px/1.6 var(--mono); }
+  .kw { color: var(--t-kw); } .bi { color: var(--t-builtin); } .ty { color: var(--t-type); }
+  .num { color: var(--t-num); } .str { color: var(--t-str); } .br { color: var(--t-bracket); }
+  .bug { text-decoration: underline wavy var(--bad); text-decoration-thickness: 2px; text-underline-offset: 7px; }
+  .prompt { margin-top: 24px; font-size: 22px; color: var(--accent); font-weight: 600; }
+</style>
+</head>
+<body>
+  <div>
+    <h1>UPLC <span>Bug Hunt</span></h1>
+    <p>Spot the bug in Untyped Plutus Core, or write your own and get ranked on cost.</p>
+    <div class="badges">
+      <span class="badge easy">Easy</span>
+      <span class="badge medium">Medium</span>
+      <span class="badge hard">Hard</span>
+    </div>
+  </div>
+  <div class="card">
+    <p class="intent"><b>Intent</b>Returns "small" when n &lt; 10, otherwise "big".</p>
+<pre><span class="br">(</span><span class="kw">program</span> <span class="num">1.1.0</span>
+  <span class="br">(</span><span class="kw">lam</span> n
+    <span class="br">[</span> <span class="bug"><span class="br">(</span><span class="kw">builtin</span> <span class="bi">ifThenElse</span><span class="br">)</span></span>
+      <span class="br">[</span> <span class="br">(</span><span class="kw">builtin</span> <span class="bi">lessThanInteger</span><span class="br">)</span> n
+        <span class="br">(</span><span class="kw">con</span> <span class="ty">integer</span> <span class="num">10</span><span class="br">)</span> <span class="br">]</span>
+      <span class="br">(</span><span class="kw">con</span> <span class="ty">string</span> <span class="str">"small"</span><span class="br">)</span>
+      <span class="br">(</span><span class="kw">con</span> <span class="ty">string</span> <span class="str">"big"</span><span class="br">)</span> <span class="br">]</span><span class="br">)</span><span class="br">)</span></pre>
+    <p class="prompt">What's the problem?</p>
+  </div>
+</body>
+</html>

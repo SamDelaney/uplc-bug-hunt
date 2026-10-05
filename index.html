@@ -1,86 +1,113 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>UPLC Bug Hunt</title>
-  <link rel="stylesheet" href="style.css" />
-</head>
-<body>
-  <main>
-    <header class="top">
-      <h1>UPLC <span>Bug Hunt</span></h1>
-      <div class="hud" id="hud" hidden>
-        <span>Round <b id="round"></b></span>
-        <span>Score <b id="score">0</b></span>
-        <span>Streak <b id="streak">0</b></span>
-        <span>Time <b id="qtime">0.0s</b></span>
-        <span>Total <b id="ttime">0:00</b></span>
-      </div>
-    </header>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>UPLC Bug Hunt</title>
+    <meta
+      name="description"
+      content="Practise Untyped Plutus Core: find the bug in each snippet, or write your own UPLC and get ranked on cost."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="UPLC Bug Hunt" />
+    <meta
+      property="og:description"
+      content="Practise Untyped Plutus Core: find the bug in each snippet, or write your own UPLC and get ranked on cost."
+    />
+    <meta
+      property="og:url"
+      content="https://samdelaney.github.io/uplc-bug-hunt/"
+    />
+    <meta
+      property="og:image"
+      content="https://samdelaney.github.io/uplc-bug-hunt/social-preview.png"
+    />
+    <meta property="og:image:width" content="1280" />
+    <meta property="og:image:height" content="640" />
+    <meta
+      property="og:image:alt"
+      content="UPLC Bug Hunt: a UPLC snippet with a bug underlined, and the question What's the problem?"
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main>
+      <header class="top">
+        <h1>🔎 UPLC <span>Bug Hunt</span></h1>
+        <div class="hud" id="hud" hidden>
+          <span>Round <b id="round"></b></span>
+          <span>Score <b id="score">0</b></span>
+          <span>Streak <b id="streak">0</b></span>
+          <span>Time <b id="qtime">0.0s</b></span>
+          <span>Total <b id="ttime">0:00</b></span>
+        </div>
+      </header>
 
-    <section id="start">
-      <div class="modes">
-        <div class="card mode">
-          <h2>Bug Hunt</h2>
-          <p>Find the bug in each snippet. Keys 1 to 4 answer, Enter continues.</p>
-          <div class="mode-actions" id="filters">
-            <button data-filter="all" class="primary">Start</button>
-            <button data-filter="easy">Easy</button>
-            <button data-filter="medium">Medium</button>
-            <button data-filter="hard">Hard</button>
+      <section id="start">
+        <div class="modes">
+          <div class="card mode">
+            <h2>Bug Hunt</h2>
+            <p>
+              Find the bug in each snippet. Keys 1 to 4 answer, Enter continues.
+            </p>
+            <div class="mode-actions" id="filters">
+              <button data-filter="all" class="primary">Start</button>
+              <button data-filter="easy">Easy</button>
+              <button data-filter="medium">Medium</button>
+              <button data-filter="hard">Hard</button>
+            </div>
+            <p class="muted" id="best"></p>
           </div>
-          <p class="muted" id="best"></p>
-        </div>
-        <div class="card mode">
-          <h2>Coding Challenges</h2>
-          <p>Write UPLC that passes the tests. Ctrl+Enter runs them.</p>
-          <div class="mode-actions">
-            <a class="button primary" href="practice.html">Start</a>
+          <div class="card mode">
+            <h2>Coding Challenges</h2>
+            <p>Write UPLC that passes the tests. Ctrl+Enter runs them.</p>
+            <div class="mode-actions">
+              <a class="button primary" href="practice.html">Start</a>
+            </div>
+            <p class="muted" id="challengeStats"></p>
           </div>
-          <p class="muted" id="challengeStats"></p>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <section id="play" hidden>
-      <div class="card">
-        <div class="meta">
-          <span class="badge" id="diff"></span>
-          <h2 id="title"></h2>
+      <section id="play" hidden>
+        <div class="card">
+          <div class="meta">
+            <span class="badge" id="diff"></span>
+            <h2 id="title"></h2>
+          </div>
+          <p class="context"><span>Intent</span> <span id="context"></span></p>
+          <pre class="code" id="code"></pre>
         </div>
-        <p class="context"><span>Intent</span> <span id="context"></span></p>
-        <pre class="code" id="code"></pre>
-      </div>
-      <p class="prompt">What's the problem?</p>
-      <ol class="options" id="options"></ol>
-      <div class="card reveal" id="reveal" hidden>
-        <p class="verdict" id="verdict"></p>
-        <p class="label">The bug</p>
-        <p class="bug" id="bug"></p>
-        <p id="explain"></p>
-        <p class="label">Fixed</p>
-        <pre class="code" id="fix"></pre>
-        <button class="primary" id="next">Next</button>
-      </div>
-    </section>
+        <p class="prompt">What's the problem?</p>
+        <ol class="options" id="options"></ol>
+        <div class="card reveal" id="reveal" hidden>
+          <p class="verdict" id="verdict"></p>
+          <p class="label">The bug</p>
+          <p class="bug" id="bug"></p>
+          <p id="explain"></p>
+          <p class="label">Fixed</p>
+          <pre class="code" id="fix"></pre>
+          <button class="primary" id="next">Next</button>
+        </div>
+      </section>
 
-    <section id="end" class="card" hidden>
-      <h2 id="final"></h2>
-      <p id="summary"></p>
-      <div class="times">
-        <div><span>Total time</span><b id="endTotal"></b></div>
-        <div><span>Average</span><b id="endAvg"></b></div>
-        <div><span>Fastest</span><b id="endFast"></b></div>
-        <div><span>Slowest</span><b id="endSlow"></b></div>
-      </div>
-      <ul class="review" id="review"></ul>
-      <button class="primary" id="again">Play again</button>
-    </section>
-  </main>
-  <script src="highlight.js"></script>
-  <script src="puzzles.js"></script>
-  <script src="problems.js"></script>
-  <script src="game.js"></script>
-</body>
+      <section id="end" class="card" hidden>
+        <h2 id="final"></h2>
+        <p id="summary"></p>
+        <div class="times">
+          <div><span>Total time</span><b id="endTotal"></b></div>
+          <div><span>Average</span><b id="endAvg"></b></div>
+          <div><span>Fastest</span><b id="endFast"></b></div>
+          <div><span>Slowest</span><b id="endSlow"></b></div>
+        </div>
+        <ul class="review" id="review"></ul>
+        <button class="primary" id="again">Play again</button>
+      </section>
+    </main>
+    <script src="highlight.js"></script>
+    <script src="puzzles.js"></script>
+    <script src="problems.js"></script>
+    <script src="game.js"></script>
+  </body>
 </html>
