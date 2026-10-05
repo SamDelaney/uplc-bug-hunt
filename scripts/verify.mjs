@@ -3,14 +3,14 @@
 import { readFileSync } from "node:fs";
 import vm from "node:vm";
 import init, { evaluate, normalize, engine_version } from "../pkg/uplc_eval.js";
-import { SITE_BUDGET } from "../evaluator.js";
+import { SITE_BUDGET } from "../js/evaluator.js";
 
 const root = new URL("../", import.meta.url);
 await init({ module_or_path: readFileSync(new URL("pkg/uplc_eval_bg.wasm", root)) });
 
 const load = (file, name) => vm.runInThisContext(`${readFileSync(new URL(file, root), "utf8")}\n;${name}`);
-const PUZZLES = load("puzzles.js", "PUZZLES");
-const PROBLEMS = load("problems.js", "PROBLEMS");
+const PUZZLES = load("data/puzzles.js", "PUZZLES");
+const PROBLEMS = load("data/problems.js", "PROBLEMS");
 
 const BUDGET = [SITE_BUDGET.cpu, SITE_BUDGET.mem]; // same cap the site applies per test
 function run(source, args = []) {

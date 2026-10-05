@@ -1,6 +1,6 @@
 // Runs the wasm evaluator off the main thread. A wasm trap (panic, stack overflow) leaves the
 // module unusable, so on any thrown error the worker reports a crash and the page replaces it.
-import init, { evaluate, normalize, engine_version } from "./pkg/uplc_eval.js";
+import init, { evaluate, normalize, engine_version } from "../pkg/uplc_eval.js";
 
 const ready = init();
 
